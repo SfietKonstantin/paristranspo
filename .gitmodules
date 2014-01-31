@@ -1,0 +1,3 @@
+[submodule "src/libvianavigo"]
+	path = src/libvianavigo
+	url = https://github.com/SfietKonstantin/libvianavigo.git
