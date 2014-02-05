@@ -54,10 +54,10 @@ Dialog {
 
         header: Column {
             width: view.width
-            PageHeader {
-                //: Title of the search place dialog
-                //% "Search"
-                title: qsTrId("paristranspo-place-search")
+            DialogHeader {
+                //: Accept text for the place search dialog
+                //% "Select place"
+                title: qsTrId("paristranspo-place-select")
             }
             SearchField {
                 id: searchField
