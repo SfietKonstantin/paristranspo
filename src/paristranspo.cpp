@@ -28,7 +28,7 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <sailfishapp.h>
+#include <sailfishapp/sailfishapp.h>
 #include <QtCore/QObject>
 #include <QtCore/QDateTime>
 #include <QtCore/QTranslator>
@@ -40,18 +40,29 @@
 #include "route.h"
 #include "placesearchmodel.h"
 #include "routesearchmodel.h"
+#include "routedetailmodel.h"
 
 static const char *TRANSLATION_PATH = "/usr/share/harbour-paristranspo/translations";
 
 static const char *URI = "harbour.paristranspo";
 static const char *COLORED_TEXT = "<span style=\"text-decoration:none; color:%1\">%2</span>: %3";
+#ifndef DESKTOP
 static const char *BUS_PATH = "/usr/share/harbour-paristranspo/data/icons/bus.png";
 static const char *METRO_PATH = "/usr/share/harbour-paristranspo/data/icons/metro.png";
 static const char *RER_PATH = "/usr/share/harbour-paristranspo/data/icons/rer.png";
 static const char *TRAIN_PATH = "/usr/share/harbour-paristranspo/data/icons/train.png";
 static const char *TRAM_PATH = "/usr/share/harbour-paristranspo/data/icons/tram.png";
-// static const char *WALKING_PATH = "/usr/share/harbour-paristranspo/data/icons/walking.png";
-// static const char *WAITING_PATH = "/usr/share/harbour-paristranspo/data/icons/waiting.png";
+static const char *WALKING_PATH = "/usr/share/harbour-paristranspo/data/icons/walking.png";
+static const char *WAITING_PATH = "/usr/share/harbour-paristranspo/data/icons/waiting.png";
+#else
+static const char *BUS_PATH = "../data/icons/bus.png";
+static const char *METRO_PATH = "../data/icons/metro.png";
+static const char *RER_PATH = "../data/icons/rer.png";
+static const char *TRAIN_PATH = "../data/icons/train.png";
+static const char *TRAM_PATH = "../data/icons/tram.png";
+static const char *WALKING_PATH = "../data/icons/walking.png";
+static const char *WAITING_PATH = "../data/icons/waiting.png";
+#endif
 
 static const char *ICON = "http://www.vianavigo.com/fileadmin/templates/STIF/picto_ligne_48/%1.png";
 
@@ -75,7 +86,7 @@ public slots:
     static QString walkSpeed(int speed);
     static QString routeType(int type);
     static QList<QObject *> processedModes(Route *route);
-    static QString modeIcon(Mode *mode);
+    static QString modeIcon(int type);
     static QString modeLineIcon(Mode *mode);
 };
 
@@ -186,6 +197,10 @@ QString ParisTranspo::routeType(int type)
 QList<QObject *> ParisTranspo::processedModes(Route *route)
 {
     QList<QObject *> modes;
+    if (!route) {
+        return modes;
+    }
+
     foreach (Mode *mode, route->modes()) {
         if (mode->type() != Mode::Waiting && mode->type() != Mode::Walking) {
             modes.append(mode);
@@ -194,10 +209,10 @@ QList<QObject *> ParisTranspo::processedModes(Route *route)
     return modes;
 }
 
-QString ParisTranspo::modeIcon(Mode *mode)
+QString ParisTranspo::modeIcon(int type)
 {
     QString icon;
-    switch (mode->type()) {
+    switch (type) {
     case Mode::Bus:
         icon = BUS_PATH;
         break;
@@ -221,6 +236,12 @@ QString ParisTranspo::modeIcon(Mode *mode)
         break;
     case Mode::Val:
         icon = BUS_PATH;
+        break;
+    case Mode::Walking:
+        icon = WALKING_PATH;
+        break;
+    case Mode::Waiting:
+        icon = WAITING_PATH;
         break;
     default:
         break;
@@ -253,6 +274,7 @@ void defineImports()
     qmlRegisterType<Mode>(URI, 1, 0, "Mode");
     qmlRegisterType<PlaceSearchModel>(URI, 1, 0, "PlaceSearchModel");
     qmlRegisterType<RouteSearchModel>(URI, 1, 0, "RouteSearchModel");
+    qmlRegisterType<RouteDetailModel>(URI, 1, 0, "RouteDetailModel");
 }
 
 int main(int argc, char *argv[])
@@ -261,16 +283,25 @@ int main(int argc, char *argv[])
 
     QScopedPointer<QTranslator> engineeringEnglish(new QTranslator);
     QScopedPointer<QTranslator> translator(new QTranslator);
+#ifndef DESKTOP
     engineeringEnglish->load("paristranspo-engineering-english", TRANSLATION_PATH);
-    translator->load(QLocale(), "friends", "_", TRANSLATION_PATH);
+#else
+    engineeringEnglish->load("paristranspo-engineering-english", ":/");
+#endif
+    translator->load(QLocale(), "paristranspo", "_", TRANSLATION_PATH);
     QGuiApplication *app = SailfishApp::application(argc, argv);
 
     app->installTranslator(engineeringEnglish.data());
     app->installTranslator(translator.data());
 
     QQuickView *view = SailfishApp::createView();
+#ifndef DESKTOP
     view->setSource(SailfishApp::pathTo("qml/harbour-paristranspo.qml"));
     view->showFullScreen();
+#else
+    view->setSource(QUrl("qrc:/qml/harbour-paristranspo.qml"));
+    view->show();
+#endif
 
     int result = app->exec();
     app->removeTranslator(translator.data());

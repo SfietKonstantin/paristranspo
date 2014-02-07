@@ -77,6 +77,7 @@ Page {
                     anchors.left: parent.left; anchors.leftMargin: Theme.paddingMedium
                     anchors.right: parent.right; anchors.rightMargin: Theme.paddingMedium
                     anchors.verticalCenter: parent.verticalCenter
+                    truncationMode: TruncationMode.Fade
                     //: Placeholder for the departure field
                     //% "Departure"
                     text: routeSearchModel.departure == null ? qsTrId("paristranspo-departure")
@@ -90,6 +91,7 @@ Page {
                     anchors.left: parent.left; anchors.leftMargin: Theme.paddingMedium
                     anchors.right: parent.right; anchors.rightMargin: Theme.paddingMedium
                     anchors.verticalCenter: parent.verticalCenter
+                    truncationMode: TruncationMode.Fade
                     //: Placeholder for the arrival field
                     //% "Arrival"
                     text: routeSearchModel.arrival == null ? qsTrId("paristranspo-arrival")

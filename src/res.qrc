@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/harbour-paristranspo.qml</file>
+        <file>qml/LocationIndicator.qml</file>
+        <file>qml/MainPage.qml</file>
+        <file>qml/PlaceSearchDialog.qml</file>
+        <file>qml/RouteDetailPage.qml</file>
+        <file>qml/RouteSearchPage.qml</file>
+        <file>data/icons/bus.png</file>
+        <file>data/icons/metro.png</file>
+        <file>data/icons/rer.png</file>
+        <file>data/icons/train.png</file>
+        <file>data/icons/tram.png</file>
+        <file>data/icons/waiting.png</file>
+        <file>data/icons/walking.png</file>
+        <file>paristranspo-engineering-english.qm</file>
+    </qresource>
+</RCC>

@@ -1,5 +1,10 @@
 TARGET = harbour-paristranspo
 
+CONFIG(desktop):QT = core gui network quick
+CONFIG(desktop):CONFIG += link_pkgconfig
+CONFIG(desktop):PKGCONFIG += sailfishapp
+CONFIG(desktop):DEFINES += DESKTOP
+CONFIG(desktop):RESOURCES += res.qrc
 CONFIG += sailfishapp
 
 SOURCES += paristranspo.cpp
@@ -11,7 +16,9 @@ OTHER_FILES += qml/harbour-paristranspo.qml \
     qml/MainPage.qml \
     qml/SearchDialog.qml \
     harbour-paristranspo.desktop \
-    qml/RouteSearchPage.qml
+    qml/RouteSearchPage.qml \
+    qml/RouteDetailPage.qml \
+    qml/LocationIndicator.qml
 
 
 # Hardcoded for Sailfish OS
@@ -39,7 +46,7 @@ INSTALLS += target qmlFiles desktopFile iconFile iconFiles
 
 # Translations
 TS_FILE = $$OUT_PWD/paristranspo.ts
-EE_QM = $$OUT_PWD/paristranspo-engineering-english.qm
+EE_QM = $$PWD/paristranspo-engineering-english.qm
 
 ts.commands += lupdate $$PWD -ts $$TS_FILE
 ts.CONFIG += no_check_exist
@@ -65,3 +72,6 @@ engineering_english_install.files = $$EE_QM
 
 INSTALLS += engineering_english_install
 #INSTALLS += translations_install
+
+RESOURCES += \
+    res.qrc
